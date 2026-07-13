@@ -164,9 +164,9 @@ export const DEFAULT_CARDS: LyricCard[] = [
   },
   {
     id: "default-21",
-    cardName: "21 · 源泉 (The Source)",
+    cardName: "21 · 自我 (The Self)",
     songTitle: "自恋咒",
-    lyrics: "I am the power\nI am the source",
+    lyrics: "剧情 对白 角色\n都是我",
     songLink: "https://music.163.com/song?id=2655897473&uct2=U2FsdGVkX19PP/jG7kN+mGIhIuAkKid4mD9/mJ+Ythk="
   },
   {
