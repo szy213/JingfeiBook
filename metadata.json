@@ -1,0 +1,6 @@
+{
+  "name": "陈婧霏歌词答案之书",
+  "description": "以陈婧霏歌词为主题的复古神秘女巫风塔罗牌式答案之书交互网页，支持上下滑动抽牌、背景音乐播放、卡牌自定义编辑及歌曲跳转。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "陈婧霏·答案之书",
+  "short_name": "答案之书",
+  "icons": [
+    {
+      "src": "/icon.jpg",
+      "sizes": "any",
+      "type": "image/jpeg"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#080203",
+  "background_color": "#080203"
+}

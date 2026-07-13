@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Noto+Serif+SC:wght@300;400;600;800&family=JetBrains+Mono:wght@300;400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif-cn: "Noto Serif SC", serif;
+  --font-serif-en: "Cinzel", serif;
+  --font-mono: "JetBrains Mono", monospace;
+  
+  --color-mystic-crimson: #5c0612;
+  --color-mystic-crimson-dark: #1f0105;
+  --color-mystic-wine: #9c1228;
+  --color-mystic-wine-pale: #f3c2c9;
+  --color-mystic-charcoal: #080203;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-mystic-charcoal);
+    color: #fcecef;
+    font-family: "Noto Serif SC", "Inter", sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* Custom scrollbars for a cleaner look */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #120103;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #9c1228;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #f3c2c9;
+  }
+}
+
+/* Custom card paper textures or mystic glows */
+.mystic-glow {
+  box-shadow: 0 0 25px rgba(156, 18, 40, 0.35);
+}
+
+.crimson-glow {
+  box-shadow: 0 0 30px rgba(92, 6, 18, 0.5);
+}
+
+.paper-texture {
+  background-image: radial-gradient(rgba(156, 18, 40, 0.08) 1px, transparent 0);
+  background-size: 16px 16px;
+}
+
+/* Shimmer animation for card edge with wine colours */
+@keyframes wine-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer-edge {
+  background: linear-gradient(90deg, #9c1228 25%, #f3c2c9 50%, #9c1228 75%);
+  background-size: 200% 100%;
+  animation: wine-shimmer 4s infinite linear;
+}
+
+
