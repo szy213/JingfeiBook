@@ -19,10 +19,8 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   const [copied, setCopied] = useState(false);
   const [posterUrl, setPosterUrl] = useState("");
 
-  if (!card) return null;
-
   // Process lyrics for display and copying
-  const rawLyrics = card.lyrics.trim();
+  const rawLyrics = card?.lyrics.trim() || "";
   const hasChinese = /[\u4e00-\u9fa5]/.test(rawLyrics);
   const lyricLines = hasChinese ? rawLyrics.split(/[\s\n]+/) : rawLyrics.split(/\n+/);
 
@@ -173,6 +171,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   }, [isOpen, card, isSecret, lyricLines]);
 
   const handleCopyText = async () => {
+    if (!card) return;
     const cardId = card.id.split("-")[1] || "01";
     const cleanName = card.cardName.replace(/ \(.+\)/g, "");
     const shareText = `✦ 陈婧霏 · 人间指南 ✦
@@ -192,6 +191,8 @@ ${isSecret ? `隐藏答案：${card.songTitle}` : `歌词解答：${card.songTit
       console.error("Failed to copy text:", err);
     }
   };
+
+  if (!card) return null;
 
   return (
     <AnimatePresence>
