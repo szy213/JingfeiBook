@@ -122,7 +122,7 @@ function AppContent() {
 
             {/* Main Interactive Deck view */}
             <main className="flex-1 w-full flex items-center justify-center overflow-hidden">
-              <CardDeck cards={DEFAULT_CARDS} />
+              <CardDeck cards={DEFAULT_CARDS} onAuthRequired={() => setAuthModalOpen(true)} />
             </main>
 
             {/* Subtle Footer watermark */}

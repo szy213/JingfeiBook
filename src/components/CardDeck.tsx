@@ -6,12 +6,15 @@ import { mysticAudio } from "../utils/audio";
 import { Sparkles, ArrowLeftRight, RefreshCw, ExternalLink, Share2 } from "lucide-react";
 import { ShareModal } from "./ShareModal";
 import { useCardHistory } from "../hooks/useCardHistory";
+import { useAuth } from "../contexts/AuthContext";
 
 interface CardDeckProps {
   cards: LyricCard[];
+  onAuthRequired?: () => void;
 }
 
-export const CardDeck: React.FC<CardDeckProps> = ({ cards }) => {
+export const CardDeck: React.FC<CardDeckProps> = ({ cards, onAuthRequired }) => {
+  const { user } = useAuth();
   const [question, setQuestion] = useState("");
   const [submittedQuestion, setSubmittedQuestion] = useState("");
   const [isDrawing, setIsDrawing] = useState(false);
@@ -72,6 +75,10 @@ export const CardDeck: React.FC<CardDeckProps> = ({ cards }) => {
   // Pick a random card
   const drawCard = () => {
     if (cards.length === 0) return;
+    if (!user) {
+      onAuthRequired?.();
+      return;
+    }
     setIsDrawing(true);
     setDragOffset(0);
     setLastTickOffset(0);
