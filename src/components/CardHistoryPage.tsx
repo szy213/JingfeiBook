@@ -13,19 +13,22 @@ interface CollectedCard {
   is_secret: boolean;
 }
 
-function parseCardName(cardName: string): { number: string; word: string } {
-  // "39 · 微光 (Shimmer)" → number: "39", word: "微光"
+function parseCardName(cardName: string): { number: string; word: string; english: string } {
+  // "39 · 微光 (Shimmer)" → number: "39", word: "微光", english: "Shimmer"
   const parts = cardName.split("·");
   if (parts.length >= 2) {
     const number = parts[0].trim();
-    const word = parts[1].split("(")[0].trim();
-    return { number, word };
+    const rest = parts[1].trim();
+    const word = rest.split("(")[0].trim();
+    const englishMatch = rest.match(/\(([^)]+)\)/);
+    const english = englishMatch ? englishMatch[1] : "";
+    return { number, word, english };
   }
-  return { number: "", word: cardName };
+  return { number: "", word: cardName, english: "" };
 }
 
 const CollectionCard: React.FC<{ card: CollectedCard }> = ({ card }) => {
-  const { number, word } = parseCardName(card.card_name);
+  const { number, word, english } = parseCardName(card.card_name);
   const isSecret = card.is_secret;
 
   return (
@@ -77,13 +80,21 @@ const CollectionCard: React.FC<{ card: CollectedCard }> = ({ card }) => {
       )}
 
       {/* Content */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 p-3">
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 p-3">
         <span className={`text-lg sm:text-xl font-serif-cn font-bold tracking-widest ${
           isSecret ? "text-amber-400" : "text-mystic-wine"
         }`}>
           {number}
         </span>
-        <div className={`w-6 h-[0.5px] ${isSecret ? "bg-amber-400/40" : "bg-mystic-wine/40"}`} />
+        {english ? (
+          <span className={`text-[10px] sm:text-xs font-serif-en tracking-[0.15em] uppercase font-semibold ${
+            isSecret ? "text-amber-300/90" : "text-mystic-wine/80"
+          }`}>
+            {english}
+          </span>
+        ) : (
+          <div className={`w-6 h-[0.5px] ${isSecret ? "bg-amber-400/40" : "bg-mystic-wine/40"}`} />
+        )}
         <span className={`text-sm sm:text-base font-serif-cn font-medium tracking-wider ${
           isSecret ? "text-amber-200/90" : "text-mystic-wine-pale"
         }`}>
