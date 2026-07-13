@@ -110,7 +110,7 @@ export const DEFAULT_CARDS: LyricCard[] = [
     id: "default-13",
     cardName: "13 · 坦途 (The Highroad)",
     songTitle: "春宵苦短少女快前进",
-    lyrics: "When you with me\neverything will be easy",
+    lyrics: "When you with me\neverything‘ll be easy",
     songLink: "https://music.163.com/song?id=2655896777&uct2=U2FsdGVkX181/FKfenqVV7XsS7UMeh6N42uHb07ZSCA="
   },
   {
@@ -124,7 +124,7 @@ export const DEFAULT_CARDS: LyricCard[] = [
     id: "default-15",
     cardName: "15 · 浮生 (The Drama)",
     songTitle: "演！演！演！",
-    lyrics: "爱与恨\n得与失\n都是生活",
+    lyrics: "爱与恨 得与失\n都是生活",
     songLink: "https://music.163.com/song?id=2655897471&uct2=U2FsdGVkX1/dcuRL+p4u9EXmXvvMUpcD0P6FMvhhe3Q="
   },
   {
