@@ -286,7 +286,7 @@ export const DEFAULT_CARDS: LyricCard[] = [
     cardName: "38 · 欲望 (The Desire)",
     songTitle: "深蓝",
     lyrics: "越过自由奢侈的高墙\n去永恒的爱与欲望",
-    songLink: ""
+    songLink: "https://music.163.com/song?id=1806516957&uct2=U2FsdGVkX19ye+Hud5ezVWO7XdpOscn7HW+WAa349zY="
   },
   {
     id: "default-39",
@@ -377,7 +377,7 @@ export const DEFAULT_CARDS: LyricCard[] = [
     cardName: "51 · 纯真 (The Innocence)",
     songTitle: "积极向下",
     lyrics: "我要的不过是别浪费这盛夏\n留下了纯真再长大",
-    songLink: ""
+    songLink: "https://music.163.com/song?id=1387183465&uct2=U2FsdGVkX185rx/tMlEV4YDOYsAAPIcXKOnoi4LC+WA="
   },
   {
     id: "default-52",
