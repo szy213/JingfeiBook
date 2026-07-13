@@ -21,7 +21,7 @@ function parseCardName(cardName: string): { number: string; word: string; englis
     const rest = parts[1].trim();
     const word = rest.split("(")[0].trim();
     const englishMatch = rest.match(/\(([^)]+)\)/);
-    const english = englishMatch ? englishMatch[1] : "";
+    const english = englishMatch ? englishMatch[1].replace(/^The\s+/i, "") : "";
     return { number, word, english };
   }
   return { number: "", word: cardName, english: "" };
