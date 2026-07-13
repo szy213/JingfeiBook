@@ -430,9 +430,9 @@ export const DEFAULT_CARDS: LyricCard[] = [
   },
   {
     id: "default-60",
-    cardName: "60 · 飞翔 (The Flight)",
+    cardName: "60 · 爱情 (The Love)",
     songTitle: "September Lies",
-    lyrics: "Your love makes me certain\nthat I can fly",
+    lyrics: "Your love is the\nsweetest lullaby",
     songLink: "https://music.163.com/song?id=526434593&uct2=U2FsdGVkX1+pZWdcjfhbpulHzwynPSEslmGY8t5OPAk="
   },
   {

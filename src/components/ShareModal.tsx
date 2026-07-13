@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { LyricCard } from "../types";
-import { Share2, Copy, Download, Check, X } from "lucide-react";
+import { Copy, Check, X } from "lucide-react";
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -17,6 +17,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   isSecret,
 }) => {
   const [copied, setCopied] = useState(false);
+  const [posterUrl, setPosterUrl] = useState("");
 
   if (!card) return null;
 
@@ -25,28 +26,10 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   const hasChinese = /[\u4e00-\u9fa5]/.test(rawLyrics);
   const lyricLines = hasChinese ? rawLyrics.split(/[\s\n]+/) : rawLyrics.split(/\n+/);
 
-  const handleCopyText = async () => {
-    const cardId = card.id.split("-")[1] || "01";
-    const cleanName = card.cardName.replace(/ \(.+\)/g, "");
-    const shareText = `✦ 陈婧霏 · 人间指南 ✦
+  // Generate poster image on mount / when card changes
+  useEffect(() => {
+    if (!isOpen || !card) return;
 
-No.${cardId} |  ${cleanName} 
-————————————————
-${lyricLines.map(line => `「 ${line} 」`).join("\n")}
-————————————————
-${isSecret ? `隐藏答案：${card.songTitle}` : `歌词解答：${card.songTitle}`}
-抽取妳的人间指南 ➔ ${window.location.origin}
-`;
-    try {
-      await navigator.clipboard.writeText(shareText);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error("Failed to copy text:", err);
-    }
-  };
-
-  const handleDownloadPoster = () => {
     const canvas = document.createElement("canvas");
     canvas.width = 640;
     canvas.height = 960;
@@ -66,7 +49,7 @@ ${isSecret ? `隐藏答案：${card.songTitle}` : `歌词解答：${card.songTit
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, 640, 960);
 
-    // Background radial dots texture (simulated star field/mystic dust)
+    // Background radial dots texture
     ctx.fillStyle = isSecret ? "rgba(251, 191, 36, 0.08)" : "rgba(156, 18, 40, 0.08)";
     for (let x = 10; x < 640; x += 30) {
       for (let y = 10; y < 960; y += 30) {
@@ -76,15 +59,13 @@ ${isSecret ? `隐藏答案：${card.songTitle}` : `歌词解答：${card.songTit
       }
     }
 
-    // Colors
-    const themeColor = isSecret ? "#fbbf24" : "#9c1228"; // gold vs wine
+    const themeColor = isSecret ? "#fbbf24" : "#9c1228";
     const themeColorDim = isSecret ? "rgba(251, 191, 36, 0.35)" : "rgba(156, 18, 40, 0.35)";
 
     // Outer double border
     ctx.strokeStyle = themeColor;
     ctx.lineWidth = 6;
     ctx.strokeRect(20, 20, 600, 920);
-
     ctx.strokeStyle = themeColorDim;
     ctx.lineWidth = 1.5;
     ctx.strokeRect(30, 30, 580, 900);
@@ -92,61 +73,22 @@ ${isSecret ? `隐藏答案：${card.songTitle}` : `歌词解答：${card.songTit
     // Corner ornaments
     ctx.strokeStyle = themeColor;
     ctx.lineWidth = 2.5;
-    // Top left
-    ctx.beginPath();
-    ctx.moveTo(45, 30);
-    ctx.lineTo(30, 30);
-    ctx.lineTo(30, 45);
-    ctx.stroke();
-    ctx.fillStyle = themeColor;
-    ctx.beginPath();
-    ctx.arc(38, 38, 3, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Top right
-    ctx.beginPath();
-    ctx.moveTo(595, 30);
-    ctx.lineTo(610, 30);
-    ctx.lineTo(610, 45);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(602, 38, 3, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Bottom left
-    ctx.beginPath();
-    ctx.moveTo(45, 930);
-    ctx.lineTo(30, 930);
-    ctx.lineTo(30, 915);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(38, 922, 3, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Bottom right
-    ctx.beginPath();
-    ctx.moveTo(595, 930);
-    ctx.lineTo(610, 930);
-    ctx.lineTo(610, 915);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(602, 922, 3, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.beginPath(); ctx.moveTo(45, 30); ctx.lineTo(30, 30); ctx.lineTo(30, 45); ctx.stroke();
+    ctx.fillStyle = themeColor; ctx.beginPath(); ctx.arc(38, 38, 3, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(595, 30); ctx.lineTo(610, 30); ctx.lineTo(610, 45); ctx.stroke();
+    ctx.beginPath(); ctx.arc(602, 38, 3, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(45, 930); ctx.lineTo(30, 930); ctx.lineTo(30, 915); ctx.stroke();
+    ctx.beginPath(); ctx.arc(38, 922, 3, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(595, 930); ctx.lineTo(610, 930); ctx.lineTo(610, 915); ctx.stroke();
+    ctx.beginPath(); ctx.arc(602, 922, 3, 0, Math.PI * 2); ctx.fill();
 
     // Header graphics
     ctx.fillStyle = themeColorDim;
-    ctx.beginPath();
-    ctx.arc(320, 48, 4, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(320, 48, 4, 0, Math.PI * 2); ctx.fill();
     ctx.strokeStyle = themeColorDim;
-    ctx.beginPath();
-    ctx.moveTo(180, 48);
-    ctx.lineTo(290, 48);
-    ctx.moveTo(350, 48);
-    ctx.lineTo(460, 48);
-    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(180, 48); ctx.lineTo(290, 48); ctx.moveTo(350, 48); ctx.lineTo(460, 48); ctx.stroke();
 
-    // Draw Header titles
+    // Header titles
     ctx.textAlign = "center";
     if (isSecret) {
       ctx.fillStyle = "#fbbf24";
@@ -154,122 +96,101 @@ ${isSecret ? `隐藏答案：${card.songTitle}` : `歌词解答：${card.songTit
       ctx.fillText("✦ 隐藏款 · SECRET ✦", 320, 95);
     }
 
-    // English Card Name (THE VEIL or THE REVIVAL)
     const engName = card.cardName.split(" (")[1]?.replace(")", "") || "THE ORACLE";
-    ctx.fillStyle = isSecret ? "#fbbf24" : "#e8c5c8"; // Elegant bright gold vs high-contrast pale rose cream
-    try {
-      (ctx as any).letterSpacing = "4px";
-    } catch (e) {}
+    ctx.fillStyle = isSecret ? "#fbbf24" : "#e8c5c8";
     ctx.font = "bold 17px Georgia, serif";
     ctx.fillText(engName.toUpperCase(), 320, isSecret ? 135 : 110);
-    try {
-      (ctx as any).letterSpacing = "normal";
-    } catch (e) {}
 
-    // Chinese Card Name (56 · 面纱)
     const cnName = card.cardName.split(" (")[0] || "宿命签章";
     ctx.fillStyle = isSecret ? "#fbbf24" : "#db2777";
     ctx.font = "bold 26px Georgia, serif";
     ctx.fillText(cnName, 320, isSecret ? 180 : 155);
 
-    // Upper divider line
+    // Upper divider
     ctx.strokeStyle = themeColorDim;
-    ctx.beginPath();
-    ctx.moveTo(220, 240);
-    ctx.lineTo(420, 240);
-    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(220, 240); ctx.lineTo(420, 240); ctx.stroke();
     ctx.fillStyle = themeColor;
     ctx.font = "14px sans-serif";
     ctx.fillText(isSecret ? "★" : "✦", 320, 245);
 
-    // Render Lyrics Centered
+    // Lyrics
     ctx.fillStyle = isSecret ? "#fef3c7" : "#fafaf9";
-    ctx.font = "italic 22px Georgia, serif";
-    
-    // Auto scale font size if lines are extremely long or many
     const maxLineLen = Math.max(...lyricLines.map(line => line.length));
-    if (maxLineLen > 15) {
-      ctx.font = "italic 19px Georgia, serif";
-    }
-    if (maxLineLen > 22) {
-      ctx.font = "italic 16px Georgia, serif";
-    }
+    if (maxLineLen > 22) ctx.font = "italic 16px Georgia, serif";
+    else if (maxLineLen > 15) ctx.font = "italic 19px Georgia, serif";
+    else ctx.font = "italic 22px Georgia, serif";
 
     const lyricsYCenter = 460;
     const lyricLineHeight = 46;
     const startY = lyricsYCenter - ((lyricLines.length - 1) * lyricLineHeight) / 2;
-
     lyricLines.forEach((line, index) => {
       ctx.fillText(line, 320, startY + index * lyricLineHeight);
     });
 
-    // Lower divider line
+    // Lower divider
     ctx.strokeStyle = themeColorDim;
-    ctx.beginPath();
-    ctx.moveTo(220, 680);
-    ctx.lineTo(420, 680);
-    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(220, 680); ctx.lineTo(420, 680); ctx.stroke();
     ctx.fillStyle = themeColor;
     ctx.font = "14px sans-serif";
     ctx.fillText(isSecret ? "★" : "✦", 320, 685);
 
-    // Song Attribution outer panel
+    // Song attribution box
     ctx.strokeStyle = isSecret ? "rgba(251, 191, 36, 0.45)" : "rgba(156, 18, 40, 0.35)";
     ctx.fillStyle = isSecret ? "rgba(251, 191, 36, 0.08)" : "rgba(45, 5, 10, 0.4)";
-    
-    // Rounded attribution frame
-    const boxX = 170;
-    const boxY = 730;
-    const boxW = 300;
-    const boxH = 90;
-    const r = 8;
+    const boxX = 170, boxY = 730, boxW = 300, boxH = 90, br = 8;
     ctx.beginPath();
-    ctx.moveTo(boxX + r, boxY);
-    ctx.lineTo(boxX + boxW - r, boxY);
-    ctx.quadraticCurveTo(boxX + boxW, boxY, boxX + boxW, boxY + r);
-    ctx.lineTo(boxX + boxW, boxY + boxH - r);
-    ctx.quadraticCurveTo(boxX + boxW, boxY + boxH, boxX + boxW - r, boxY + boxH);
-    ctx.lineTo(boxX + r, boxY + boxH);
-    ctx.quadraticCurveTo(boxX, boxY + boxH, boxX, boxY + boxH - r);
-    ctx.lineTo(boxX, boxY + r);
-    ctx.quadraticCurveTo(boxX, boxY, boxX + r, boxY);
+    ctx.moveTo(boxX + br, boxY);
+    ctx.lineTo(boxX + boxW - br, boxY);
+    ctx.quadraticCurveTo(boxX + boxW, boxY, boxX + boxW, boxY + br);
+    ctx.lineTo(boxX + boxW, boxY + boxH - br);
+    ctx.quadraticCurveTo(boxX + boxW, boxY + boxH, boxX + boxW - br, boxY + boxH);
+    ctx.lineTo(boxX + br, boxY + boxH);
+    ctx.quadraticCurveTo(boxX, boxY + boxH, boxX, boxY + boxH - br);
+    ctx.lineTo(boxX, boxY + br);
+    ctx.quadraticCurveTo(boxX, boxY, boxX + br, boxY);
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
 
-    // Box text
     ctx.fillStyle = isSecret ? "rgba(253, 230, 138, 0.85)" : "rgba(232, 197, 200, 0.85)";
-    try {
-      (ctx as any).letterSpacing = "2px";
-    } catch (e) {}
     ctx.font = "bold 12px Georgia, serif";
     ctx.fillText(isSecret ? "SECRET" : "FROM", 320, 755);
-    try {
-      (ctx as any).letterSpacing = "normal";
-    } catch (e) {}
 
-    ctx.fillStyle = isSecret ? "#fbbf24" : "#fafaf9"; // Bright gold or solid warm white
-    ctx.font = "bold 20px Georgia, serif"; // Increased prominence and clarity
+    ctx.fillStyle = isSecret ? "#fbbf24" : "#fafaf9";
+    ctx.font = "bold 20px Georgia, serif";
     ctx.fillText(isSecret ? card.songTitle : ` ${card.songTitle} `, 320, 795);
 
-    // Margins signature/footer
+    // Footer
     ctx.fillStyle = isSecret ? "rgba(251, 191, 36, 0.35)" : "rgba(156, 18, 40, 0.25)";
     ctx.font = "10px monospace";
     ctx.textAlign = "left";
     ctx.fillText("CHEN JINGFEI", 50, 915);
-    
     ctx.textAlign = "right";
     const numId = card.id.split("-")[1] || "01";
     ctx.fillText(`ARCANA No.${numId}${isSecret ? " · SPECIAL" : ""}`, 590, 915);
 
-    // Download action
-    const url = canvas.toDataURL("image/png");
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${card.cardName.split(" (")[0] || "陈婧霏"}_人间指南.png`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    setPosterUrl(canvas.toDataURL("image/png"));
+  }, [isOpen, card, isSecret, lyricLines]);
+
+  const handleCopyText = async () => {
+    const cardId = card.id.split("-")[1] || "01";
+    const cleanName = card.cardName.replace(/ \(.+\)/g, "");
+    const shareText = `✦ 陈婧霏 · 人间指南 ✦
+
+No.${cardId} |  ${cleanName}
+————————————————
+${lyricLines.map(line => `「 ${line} 」`).join("\n")}
+————————————————
+${isSecret ? `隐藏答案：${card.songTitle}` : `歌词解答：${card.songTitle}`}
+抽取妳的人间指南 ➔ ${window.location.origin}
+`;
+    try {
+      await navigator.clipboard.writeText(shareText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy text:", err);
+    }
   };
 
   return (
@@ -310,64 +231,22 @@ ${isSecret ? `隐藏答案：${card.songTitle}` : `歌词解答：${card.songTit
                 分享我的人间指南
               </h3>
               <p className="text-[10px] text-stone-400 tracking-[0.1em]">
-                生成卡牌图片或复制分享给好友
+                长按图片即可保存到相册
               </p>
             </div>
 
-            {/* 1. Miniature Poster Display Wrapper */}
-            <div 
-              className={`relative aspect-[2/3] w-52 mx-auto rounded-xl overflow-hidden border p-4 flex flex-col justify-between items-center text-center shadow-lg select-none ${
-                isSecret
-                  ? "bg-gradient-to-b from-[#1c1303] via-[#0a0701] to-[#020100] border-amber-500/50"
-                  : "bg-gradient-to-b from-[#1c0205] to-[#080001] border-mystic-wine/50"
-              }`}
-            >
-              {/* Overlay Dust texture */}
-              <div className="absolute inset-0 bg-black/10 opacity-30 pointer-events-none paper-texture" />
-              
-              {/* Outer micro borders */}
-              <div className={`absolute inset-1.5 border border-dashed rounded-lg pointer-events-none ${
-                isSecret ? "border-amber-500/25" : "border-mystic-wine/25"
-              }`} />
-
-              {/* Poster Header */}
-              <div className="space-y-0.5 z-10">
-                {isSecret && (
-                  <span className="text-[7px] text-amber-400/90 font-serif-cn tracking-[0.1em] scale-90 block">
-                    ✦ 隐藏款 · SECRET ✦
-                  </span>
-                )}
-                <span className={`text-[10px] font-bold tracking-[0.2em] font-serif-en uppercase block ${isSecret ? "text-amber-300 drop-shadow-[0_0_3px_rgba(245,158,11,0.2)]" : "text-mystic-wine-pale"}`}>
-                  {card.cardName.split(" (")[1]?.replace(")", "") || "THE ORACLE"}
-                </span>
-                <span className={`text-[12px] font-serif-cn font-bold block ${isSecret ? "text-amber-400" : "text-stone-100"}`}>
-                  {card.cardName.split(" (")[0]}
-                </span>
+            {/* Poster Image — long press to save */}
+            {posterUrl && (
+              <div className={`relative w-52 mx-auto rounded-xl overflow-hidden border shadow-lg ${
+                isSecret ? "border-amber-500/50" : "border-mystic-wine/50"
+              }`}>
+                <img
+                  src={posterUrl}
+                  alt="卡牌海报"
+                  className="w-full block"
+                />
               </div>
-
-              {/* Poster Center Lyrics */}
-              <div className="flex-1 flex flex-col justify-center items-center py-1 z-10 w-full px-1">
-                <p className={`font-serif-cn font-medium italic leading-relaxed text-center flex flex-col gap-1 w-full text-[10px] sm:text-xs tracking-wider ${
-                  isSecret ? "text-amber-100" : "text-stone-200"
-                }`}>
-                  {lyricLines.map((line, idx) => (
-                    <span key={idx} className="block break-words truncate max-w-full">
-                      {line}
-                    </span>
-                  ))}
-                </p>
-              </div>
-
-              {/* Poster Attribution */}
-              <div className="space-y-1 z-10">
-                <span className={`text-[10px] font-bold block tracking-widest ${isSecret ? "text-amber-300" : "text-rose-300"}`}>
-                  {isSecret ? card.songTitle : ` ${card.songTitle} `}
-                </span>
-                <div className={`text-[6px] font-mono tracking-widest uppercase scale-75 opacity-50 ${isSecret ? "text-amber-400" : "text-stone-400"}`}>
-                  ARCANA No.{card.id.split("-")[1] || "01"}
-                </div>
-              </div>
-            </div>
+            )}
 
             {/* 2. Interactive Controls Panel */}
             <div className="flex flex-col gap-2 mt-2">
@@ -387,19 +266,6 @@ ${isSecret ? `隐藏答案：${card.songTitle}` : `歌词解答：${card.songTit
                     <span>复制文字</span>
                   </>
                 )}
-              </button>
-
-              {/* Download Poster Poster Button */}
-              <button
-                onClick={handleDownloadPoster}
-                className={`w-full py-2.5 rounded-lg text-xs tracking-widest font-serif-cn font-bold flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer ${
-                  isSecret
-                    ? "bg-gradient-to-r from-amber-500 to-yellow-600 text-black shadow-[0_4px_12px_rgba(245,158,11,0.2)]"
-                    : "bg-gradient-to-r from-[#5c0612] to-[#9c1228] border border-mystic-wine/40 text-stone-100 shadow-[0_4px_12px_rgba(156,18,40,0.25)]"
-                }`}
-              >
-                <Download className="w-3.5 h-3.5" />
-                <span>保存卡牌到相册</span>
               </button>
             </div>
           </motion.div>
